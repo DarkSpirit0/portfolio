@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Francisco Carvajal | Porfolio Profesional",
-  description: "Porfolio profesional de Francisco Carvajal, Desarrollador Full Stack. Conoce mis proyectos, habilidades y trayectoria en el desarrollo de software.",
+  title: "Antonio Sillero Ortiz | Porfolio Profesional",
+  description: "Porfolio profesional de Antonio Sillero Ortiz, Técnico Superior en Desarrollo de Aplicaciones Web (DAW). Conoce mis proyectos, habilidades y trayectoria.",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="es"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

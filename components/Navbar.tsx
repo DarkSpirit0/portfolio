@@ -18,12 +18,9 @@ export default function Navbar() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [scrolled, setScrolled] = useState(false);
 
-  // Initialize theme from localStorage or system preference
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    
     if (savedTheme === "light") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTheme("light");
       document.documentElement.classList.remove("dark");
     } else {
@@ -32,7 +29,6 @@ export default function Navbar() {
     }
   }, []);
 
-  // Handle toggle theme
   const toggleTheme = () => {
     if (theme === "dark") {
       setTheme("light");
@@ -45,13 +41,9 @@ export default function Navbar() {
     }
   };
 
-  // Scroll spy and header styling on scroll
   useEffect(() => {
     const handleScroll = () => {
-      // Header transparency styling
       setScrolled(window.scrollY > 20);
-
-      // Section tracking
       const scrollPosition = window.scrollY + 100;
       for (const item of NAV_ITEMS) {
         const targetId = item.href.substring(1);
@@ -65,7 +57,6 @@ export default function Navbar() {
         }
       }
     };
-
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -76,10 +67,7 @@ export default function Navbar() {
     const element = document.getElementById(targetId);
     if (element) {
       const offsetTop = element.offsetTop - 80;
-      window.scrollTo({
-        top: offsetTop,
-        behavior: "smooth",
-      });
+      window.scrollTo({ top: offsetTop, behavior: "smooth" });
       setIsOpen(false);
       setActiveSection(targetId);
     }
@@ -87,42 +75,43 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "glass shadow-lg border-b border-border-brand/40 py-4"
-          : "bg-transparent py-6"
+          ? "glass shadow-lg shadow-black/5 dark:shadow-black/30 border-b border-border-brand/30 py-3"
+          : "bg-transparent py-5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+
         {/* Logo */}
         <a
           href="#home"
           onClick={(e) => handleClick(e, "#home")}
-          className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2 group"
+          className="group flex items-center gap-1.5"
         >
-          <span className="bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">
-            FCar
+          <span className="text-xl font-bold tracking-tight shimmer-text">
+            ASillero
           </span>
-          <span className="text-muted-brand font-mono text-lg font-normal">.dev</span>
+          <span className="text-muted-brand font-mono text-base font-normal opacity-60 group-hover:opacity-100 transition-opacity">.dev</span>
         </a>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          <ul className="flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-2">
+          <ul className="flex items-center gap-1">
             {NAV_ITEMS.map((item) => (
               <li key={item.href}>
                 <a
                   href={item.href}
                   onClick={(e) => handleClick(e, item.href)}
-                  className={`text-sm font-medium transition-colors relative py-1 ${
+                  className={`relative px-3.5 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                     activeSection === item.href.substring(1)
-                      ? "text-primary-brand"
-                      : "text-muted-brand hover:text-foreground"
+                      ? "text-primary-brand bg-accent-brand"
+                      : "text-muted-brand hover:text-foreground hover:bg-accent-brand"
                   }`}
                 >
                   {item.label}
                   {activeSection === item.href.substring(1) && (
-                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary-brand rounded-full" />
+                    <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary-brand" />
                   )}
                 </a>
               </li>
@@ -132,57 +121,102 @@ export default function Navbar() {
           {/* Theme Toggle */}
           <button
             onClick={toggleTheme}
-            className="p-2.5 rounded-full hover:bg-secondary-brand text-muted-brand hover:text-foreground transition-all border border-border-brand/40 hover:scale-105"
-            aria-label="Toggle Theme"
+            className="theme-toggle-btn ml-3 relative p-2.5 rounded-xl border border-border-brand/50 glass text-muted-brand hover:text-foreground hover:border-primary-brand/40 transition-all duration-300 hover:scale-105 cursor-pointer"
+            aria-label={theme === "dark" ? "Activar modo claro" : "Activar modo oscuro"}
+            title={theme === "dark" ? "Activar modo claro" : "Activar modo oscuro"}
           >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            <div className="relative w-[18px] h-[18px]">
+              <Sun
+                size={18}
+                className={`absolute inset-0 transition-all duration-300 ${
+                  theme === "dark" ? "opacity-100 rotate-0 scale-100" : "opacity-0 rotate-90 scale-50"
+                }`}
+              />
+              <Moon
+                size={18}
+                className={`absolute inset-0 transition-all duration-300 ${
+                  theme === "light" ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-50"
+                }`}
+              />
+            </div>
           </button>
         </nav>
 
-        {/* Mobile menu button and theme toggle */}
-        <div className="flex items-center gap-4 md:hidden">
+        {/* Mobile: Theme + Hamburger */}
+        <div className="flex items-center gap-3 md:hidden">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-full hover:bg-secondary-brand text-muted-brand hover:text-foreground transition-all"
+            className="theme-toggle-btn p-2.5 rounded-xl border border-border-brand/50 glass text-muted-brand hover:text-foreground transition-all cursor-pointer"
             aria-label="Toggle Theme"
           >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            <div className="relative w-[18px] h-[18px]">
+              <Sun
+                size={18}
+                className={`absolute inset-0 transition-all duration-300 ${
+                  theme === "dark" ? "opacity-100 rotate-0" : "opacity-0 rotate-90"
+                }`}
+              />
+              <Moon
+                size={18}
+                className={`absolute inset-0 transition-all duration-300 ${
+                  theme === "light" ? "opacity-100 rotate-0" : "opacity-0 -rotate-90"
+                }`}
+              />
+            </div>
           </button>
-          
+
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="p-2 rounded-lg text-muted-brand hover:text-foreground hover:bg-secondary-brand transition-all"
+            className="p-2.5 rounded-xl border border-border-brand/50 glass text-muted-brand hover:text-foreground transition-all cursor-pointer"
             aria-label="Menu"
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            <div className="relative w-[24px] h-[24px]">
+              <Menu
+                size={24}
+                className={`absolute inset-0 transition-all duration-300 ${
+                  isOpen ? "opacity-0 rotate-90 scale-50" : "opacity-100 rotate-0 scale-100"
+                }`}
+              />
+              <X
+                size={24}
+                className={`absolute inset-0 transition-all duration-300 ${
+                  isOpen ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-50"
+                }`}
+              />
+            </div>
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer */}
-      {isOpen && (
-        <div className="md:hidden glass border-b border-border-brand/40 absolute top-full left-0 right-0 py-6 px-6 animate-fade-in shadow-xl">
-          <nav className="flex flex-col gap-5">
-            <ul className="flex flex-col gap-4">
-              {NAV_ITEMS.map((item) => (
-                <li key={item.href}>
-                  <a
-                    href={item.href}
-                    onClick={(e) => handleClick(e, item.href)}
-                    className={`block text-base font-medium transition-colors py-1 ${
-                      activeSection === item.href.substring(1)
-                        ? "text-primary-brand"
-                        : "text-muted-brand hover:text-foreground"
-                    }`}
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-      )}
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-400 ease-in-out ${
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <nav className="glass border-t border-border-brand/30 px-6 py-5">
+          <ul className="flex flex-col gap-1">
+            {NAV_ITEMS.map((item) => (
+              <li key={item.href}>
+                <a
+                  href={item.href}
+                  onClick={(e) => handleClick(e, item.href)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-base font-medium transition-all ${
+                    activeSection === item.href.substring(1)
+                      ? "text-primary-brand bg-accent-brand"
+                      : "text-muted-brand hover:text-foreground hover:bg-accent-brand"
+                  }`}
+                >
+                  {activeSection === item.href.substring(1) && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary-brand flex-shrink-0" />
+                  )}
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
     </header>
   );
 }
